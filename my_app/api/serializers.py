@@ -1,6 +1,7 @@
+from django.contrib.auth.models import User
+
 from rest_framework import serializers
 from my_app import models
-
 
 # class AuthorSerializer(serializers.Serializer):
 #     id = serializers.IntegerField(read_only=True)
@@ -45,7 +46,18 @@ from my_app import models
 
 
 class AuthorSerializer(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
+
     class Meta:
         model = models.Author
         fields = ['id', 'first_name', 'last_name',
-                  'date_of_birth', 'date_of_death', ]
+                  'date_of_birth', 'date_of_death',
+                  'owner']
+
+
+class UserSerializer(serializers.ModelSerializer):
+    authors = serializers.PrimaryKeyRelatedField(many=True, queryset=models.Author.objects.all())
+
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'authors')

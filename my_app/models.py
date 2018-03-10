@@ -5,6 +5,7 @@ class Author(models.Model):
     """
     Model representing an author.
     """
+    owner = models.ForeignKey('auth.User', related_name='authors', on_delete=models.CASCADE)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     date_of_birth = models.DateField(null=True, blank=True)

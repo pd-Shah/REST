@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from django.conf.urls import url, include
 
 from rest_framework_swagger.views import get_swagger_view
 
@@ -20,5 +20,7 @@ urlpatterns = [
         name='author_detail-api-view'
     ),
 
+    url(r'^users/$', views.UserList.as_view()),
+    url(r'^users/(?P<pk>[0-9]+)/$', views.UserDetail.as_view()),
     url(r'^swagger/$', view=swagger, name='swagger'),
 ]
