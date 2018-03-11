@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 
 from rest_framework import serializers
 from my_app import models
+from . import views
 
 # class AuthorSerializer(serializers.Serializer):
 #     id = serializers.IntegerField(read_only=True)
@@ -44,20 +45,21 @@ from my_app import models
 #         instance.save()
 #         return instance
 
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+    # authors = serializers.PrimaryKeyRelatedField(many=True, queryset=models.Author.objects.all())
+    authors_url =serializers.HyperlinkedIdentityField(view_name='my_app:api:author-detail-api-view')
 
-class AuthorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'authors_url', 'email', 'groups')
+
+
+class AuthorSerializer(serializers.HyperlinkedModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
+    user_url = serializers.HyperlinkedIdentityField(view_name='my_app:api:user-detail-api-view')
 
     class Meta:
         model = models.Author
         fields = ['id', 'first_name', 'last_name',
                   'date_of_birth', 'date_of_death',
-                  'owner']
-
-
-class UserSerializer(serializers.ModelSerializer):
-    authors = serializers.PrimaryKeyRelatedField(many=True, queryset=models.Author.objects.all())
-
-    class Meta:
-        model = User
-        fields = ('id', 'username', 'authors')
+                  'owner', 'user_url']
