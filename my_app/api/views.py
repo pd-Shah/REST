@@ -168,29 +168,65 @@ from rest_framework.reverse import reverse
 
 
 
-class AuthorList(generics.ListCreateAPIView):
-    queryset = models.Author.objects.all()
+# class AuthorList(generics.ListCreateAPIView):
+#     queryset = models.Author.objects.all()
+#     serializer_class = serializers.AuthorSerializer
+#     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+#
+#     def perform_create(self, serializer):
+#         serializer.save(owner=self.request.user)
+#
+#
+# class AuthorDetail(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = models.Author.objects.all()
+#     serializer_class = serializers.AuthorSerializer
+#     permission_classes = (
+#                     permissions.IsAuthenticatedOrReadOnly,
+#                     custom_permissions.IsOwnerOrReadOnly
+#     )
+#
+
+# class UserList(generics.ListAPIView):
+#     queryset = User.objects.all()
+#     serializer_class = serializers.UserSerializer
+#
+#
+# class UserDetail(generics.RetrieveAPIView):
+#     queryset = User.objects.all()
+#     serializer_class = serializers.UserSerializer
+
+
+class AuthorList(
+            generics.GenericAPIView,
+            generics.mixins.ListModelMixin,
+            generics.mixins.CreateModelMixin,):
+
     serializer_class = serializers.AuthorSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+    def get_queryset(self, ):
+        return models.Author.objects.all()
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
 
 
-class AuthorDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = models.Author.objects.all()
+class AuthorDetail(
+        generics.GenericAPIView,
+        generics.mixins.DestroyModelMixin,
+        generics.mixins.RetrieveModelMixin,
+        generics.mixins.UpdateModelMixin):
+
     serializer_class = serializers.AuthorSerializer
-    permission_classes = (
-                    permissions.IsAuthenticatedOrReadOnly,
-                    custom_permissions.IsOwnerOrReadOnly
-    )
+    queryset = models.Author.objects.all()
 
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
 
-class UserList(generics.ListAPIView):
-    queryset = User.objects.all()
-    serializer_class = serializers.UserSerializer
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
 
-
-class UserDetail(generics.RetrieveAPIView):
-    queryset = User.objects.all()
-    serializer_class = serializers.UserSerializer
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
