@@ -29,5 +29,4 @@ urlpatterns = [
     # ),
 
     url(r'^swagger/$', view=swagger, name='swagger'),
-     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]
