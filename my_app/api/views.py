@@ -11,6 +11,8 @@ from . import custom_permissions
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
+from rest_framework import authentication
+from rest_framework.permissions import IsAuthenticated
 
 # def test(request, ):
 #     return HttpResponse('well done!')
@@ -201,6 +203,8 @@ class AuthorList(
             generics.mixins.ListModelMixin,
             generics.mixins.CreateModelMixin,):
 
+    # authentication_classes = (authentication.BasicAuthentication, authentication.SessionAuthentication)
+    # permission_classes = (IsAuthenticated,)
     serializer_class = serializers.AuthorSerializer
 
     def get_queryset(self, ):
