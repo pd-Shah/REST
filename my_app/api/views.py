@@ -197,14 +197,13 @@ from rest_framework.permissions import IsAuthenticated
 #     queryset = User.objects.all()
 #     serializer_class = serializers.UserSerializer
 
-
 class AuthorList(
             generics.GenericAPIView,
             generics.mixins.ListModelMixin,
             generics.mixins.CreateModelMixin,):
 
-    # authentication_classes = (authentication.BasicAuthentication, authentication.SessionAuthentication)
-    # permission_classes = (IsAuthenticated,)
+    authentication_classes = (authentication.BasicAuthentication, )
+    permission_classes = (IsAuthenticated,)
     serializer_class = serializers.AuthorSerializer
 
     def get_queryset(self, ):
@@ -217,20 +216,20 @@ class AuthorList(
         return self.create(request, *args, **kwargs)
 
 
-class AuthorDetail(
-        generics.GenericAPIView,
-        generics.mixins.DestroyModelMixin,
-        generics.mixins.RetrieveModelMixin,
-        generics.mixins.UpdateModelMixin):
-
-    serializer_class = serializers.AuthorSerializer
-    queryset = models.Author.objects.all()
-
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
-
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
+# class AuthorDetail(
+#         generics.GenericAPIView,
+#         generics.mixins.DestroyModelMixin,
+#         generics.mixins.RetrieveModelMixin,
+#         generics.mixins.UpdateModelMixin):
+#
+#     serializer_class = serializers.AuthorSerializer
+#     queryset = models.Author.objects.all()
+#
+#     def get(self, request, *args, **kwargs):
+#         return self.retrieve(request, *args, **kwargs)
+#
+#     def put(self, request, *args, **kwargs):
+#         return self.update(request, *args, **kwargs)
+#
+#     def delete(self, request, *args, **kwargs):
+#         return self.destroy(request, *args, **kwargs)

@@ -14,11 +14,11 @@ urlpatterns = [
         name='author-list-api-view'
     ),
 
-    url(
-        r'^author/(?P<pk>[0-9]+)/$',
-        views.AuthorDetail.as_view(),
-        name='author-detail-api-view'
-    ),
+    # url(
+    #     r'^author/(?P<pk>[0-9]+)/$',
+    #     views.AuthorDetail.as_view(),
+    #     name='author-detail-api-view'
+    # ),
 
     # url(r'^users/$', views.UserList.as_view(), name='user-list-api-view'),
     #
@@ -29,4 +29,5 @@ urlpatterns = [
     # ),
 
     url(r'^swagger/$', view=swagger, name='swagger'),
+     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]
