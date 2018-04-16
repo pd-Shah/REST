@@ -188,48 +188,61 @@ from rest_framework.permissions import IsAuthenticated
 #     )
 #
 
-# class UserList(generics.ListAPIView):
-#     queryset = User.objects.all()
-#     serializer_class = serializers.UserSerializer
-#
-#
-# class UserDetail(generics.RetrieveAPIView):
-#     queryset = User.objects.all()
-#     serializer_class = serializers.UserSerializer
+from rest_framework.authtoken.models import Token
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.serializers import AuthTokenSerializer
+from oauth2_provider.contrib.rest_framework import TokenHasReadWriteScope, TokenHasScope
+
+class UserList(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = serializers.UserSerializer
+
+
+class UserDetail(generics.RetrieveAPIView):
+    authentication_classes = (authentication.BasicAuthentication, authentication.SessionAuthentication)
+    permission_classes = (IsAuthenticated,)
+    queryset = User.objects.all()
+    serializer_class = serializers.UserSerializer
+
+class CreateToken(ObtainAuthToken):
+    pass
 
 class AuthorList(
             generics.GenericAPIView,
             generics.mixins.ListModelMixin,
             generics.mixins.CreateModelMixin,):
 
-    authentication_classes = (authentication.BasicAuthentication, )
-    permission_classes = (IsAuthenticated,)
+    permission_classes = [permissions.IsAuthenticated, TokenHasReadWriteScope]
     serializer_class = serializers.AuthorSerializer
 
     def get_queryset(self, ):
         return models.Author.objects.all()
 
     def get(self, request, *args, **kwargs):
+        t = Token.objects.get_or_create(user=request.user)
+        print(t)
         return self.list(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
 
 
-# class AuthorDetail(
-#         generics.GenericAPIView,
-#         generics.mixins.DestroyModelMixin,
-#         generics.mixins.RetrieveModelMixin,
-#         generics.mixins.UpdateModelMixin):
-#
-#     serializer_class = serializers.AuthorSerializer
-#     queryset = models.Author.objects.all()
-#
-#     def get(self, request, *args, **kwargs):
-#         return self.retrieve(request, *args, **kwargs)
-#
-#     def put(self, request, *args, **kwargs):
-#         return self.update(request, *args, **kwargs)
-#
-#     def delete(self, request, *args, **kwargs):
-#         return self.destroy(request, *args, **kwargs)
+class AuthorDetail(
+        generics.GenericAPIView,
+        generics.mixins.DestroyModelMixin,
+        generics.mixins.RetrieveModelMixin,
+        generics.mixins.UpdateModelMixin):
+
+    authentication_classes = (authentication.BasicAuthentication, authentication.SessionAuthentication)
+    permission_classes = (IsAuthenticated,)
+    serializer_class = serializers.AuthorSerializer
+    queryset = models.Author.objects.all()
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)

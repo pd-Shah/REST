@@ -45,13 +45,13 @@ from . import views
 #         instance.save()
 #         return instance
 
-# class UserSerializer(serializers.HyperlinkedModelSerializer):
-#     # authors = serializers.PrimaryKeyRelatedField(many=True, queryset=models.Author.objects.all())
-#     authors_url =serializers.HyperlinkedIdentityField(view_name='my_app:api:author-detail-api-view')
-#
-#     class Meta:
-#         model = User
-#         fields = ('id', 'username', 'authors_url', 'email', 'groups')
+class UserSerializer(serializers.ModelSerializer):
+    # authors = serializers.PrimaryKeyRelatedField(many=True, queryset=models.Author.objects.all())
+    # authors_url =serializers.HyperlinkedIdentityField(view_name='my_app:api:author-detail-api-view')
+
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'email', 'groups')
 
 
 class AuthorSerializer(serializers.ModelSerializer):
